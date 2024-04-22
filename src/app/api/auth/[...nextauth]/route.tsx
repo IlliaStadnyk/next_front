@@ -1,7 +1,7 @@
 import NextAuth, {NextAuthOptions} from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: "Email and Password",
@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
                         body: JSON.stringify(data),
                     }
                     try {
-                        console.log("lolsl",options)
+                        // console.log("lolsl",options)
                         const response = await fetch("http://3.143.224.54/api/login", options)
                         console.log("1", response)
                         const responseData = await response.json()
