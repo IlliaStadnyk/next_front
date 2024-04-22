@@ -31,7 +31,7 @@ const authOptions: NextAuthOptions = {
                     try {
                         // console.log("lolsl",options)
                         const response = await fetch("http://3.143.224.54/api/login", options)
-                        console.log("1", response)
+                        // console.log("1", response)
                         const responseData = await response.json()
                         console.log("loginBack",responseData)
                         console.log("responseData", responseData);
