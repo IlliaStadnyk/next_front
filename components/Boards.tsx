@@ -6,7 +6,7 @@ import {SessionProvider, useSession} from "next-auth/react";
 // import {session} from "next-auth/core/routes";
 
 const Boards: React.FC = () => {
-  const [boards, setBoards] = useState<Array<{ id: string, title: string, body: string, name: string }>>([]);
+  const [boards, setBoards] = useState<Array<{ id: number, title: string, body: string, name: string }>>([]);
   const {data: session  } = useSession();
   const handleClick = () => {
     fetchData();

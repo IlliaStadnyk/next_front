@@ -29,7 +29,7 @@ export default async function RootLayout({
             <Link href='/lista'>Lista</Link>
             {!!session &&
                 <div>
-                  {/*<Link  href='/profile'>Profile</Link>*/}
+                  <Link  href='/profile'>Profile</Link>
                   <Logout />
                 </div>
 
@@ -37,7 +37,7 @@ export default async function RootLayout({
             {!session &&
               <div>
                 <Link href='/login'>Login</Link>
-                {/*<Link href='/register'>Register</Link>*/}
+                <Link href='/register'>Register</Link>
               </div>
             }
           </nav>

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         });
         console.log(dataForLogin);
 
-        const response = await fetch('http://127.0.0.1:8000/api/login',{
+        const response = await fetch('http://127.0.0.1:6000/api/login',{
             method: 'POST',
             body: dataForLogin,
             headers: {

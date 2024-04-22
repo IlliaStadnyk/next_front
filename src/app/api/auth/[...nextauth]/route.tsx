@@ -1,5 +1,6 @@
 import NextAuth, {NextAuthOptions} from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import {NextApiRequest, NextApiResponse} from "next"
 
 
 export const authOptions: NextAuthOptions = {
@@ -10,74 +11,49 @@ export const authOptions: NextAuthOptions = {
                 email: {label: "Email", type: "email", placeholder: "Your Email"},
                 password: {label: "Password", type: "password"},
             },
-            async authorize(credentials) {
-                const res = await fetch("http://127.0.0.1:8000/api/sanctum/csrf-cookie", {
-                    method: "GET",
-                })
-
-                const setCookieHeader = res.headers.get("set-cookie")
-                // console.log("setCookieHeader", setCookieHeader)
-                // you'll find your_site_session key in this console log
-                const responseBody = await res.text();
-                console.log(responseBody);
-
-                let cookies = null
-                if (setCookieHeader) {
-                    cookies = setCookieHeader.split(", ")
-                }
-                // console.log(cookies)
-
-                let sessionKey = null
-                let xsrfToken = null
-
-                if (cookies) {
-                    for (const cookie of cookies) {
-                        if (cookie.startsWith("laravel_session=")) {
-                            sessionKey = cookie.split("=")[1]
-                        } else if (cookie.startsWith("XSRF-TOKEN=")) {
-                            xsrfToken = cookie.split("=")[1]
-                        }
-
-                        if (sessionKey && xsrfToken) {
-                            break
-                        }
-                    }
-                }
-                const data = {
-                    email: credentials?.email,
-                    password: credentials?.password,
-                }
-                const headers = new Headers({
-                    Cookie: `laravel_session=${sessionKey}`,
-                    "Content-Type": "application/json",
-                })
-
-                if (xsrfToken) {
-                    headers.append("X-XSRF-TOKEN", xsrfToken)
-                }
-
-                const options = {
-                    method: "POST",
-                    headers,
-                    body: JSON.stringify(data),
-                }
+            async authorize(credentials, req) {
                 try {
-                    // console.log(options)
-                    const response = await fetch("http://3.143.224.54/api/login", options)
-                    const responseData = await response.json()
-                    console.log("responseData", responseData);
-                    if (responseData.success == true) {
-                        const responseUser = responseData.data.user
-                        console.log("response", responseUser)
-                        return {...responseUser, token: responseData.data.token}
-                    } else {
-                        console.log("HTTP error! Status:", response.status)
-                        // Handle non-successful response here, return an appropriate JSON response.
-                        return null
+
+
+                    const headers = new Headers({
+
+                        "Content-Type": "application/json",
+                    })
+
+
+                    const data = {
+                        email: credentials?.email,
+                        password: credentials?.password,
                     }
-                } catch (error) {
-                    console.log("Error", error)
+                    const options = {
+                        method: "POST",
+                        headers,
+                        body: JSON.stringify(data),
+                    }
+                    try {
+                        console.log("lolsl",options)
+                        const response = await fetch("http://3.143.224.54/api/login", options)
+                        console.log("1", response)
+                        const responseData = await response.json()
+                        console.log("loginBack",responseData)
+                        console.log("responseData", responseData);
+                        if (responseData.success == true) {
+                            const responseUser = responseData.data.user
+                            console.log("response", responseUser)
+                            return {...responseUser, token: responseData.data.token}
+                        } else {
+                            console.log("HTTP error! Status:", response.status)
+                            // Handle non-successful response here, return an appropriate JSON response.
+                            return null
+                        }
+                    } catch (error) {
+                        console.log("Error", error)
+                    }
                 }
+                catch (error){
+                    console.log("Error2", error)
+                }
+
 
                 return null
             },
@@ -99,5 +75,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
 }
-const handler = NextAuth(authOptions)
+const handler = (req: NextApiRequest, res: NextApiResponse) =>
+    NextAuth(req, res, authOptions);
+
 export {handler as GET, handler as POST}
